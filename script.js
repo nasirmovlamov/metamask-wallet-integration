@@ -8,9 +8,6 @@ window.addEventListener("DOMContentLoaded", async () => {
   if (isUserLogged.length > 0) {
     console.log("User is logged in");
   }
-  const accountElement = document.querySelector(".account");
-  accountElement.querySelector(".showAccount").textContent = isUserLogged[0];
-  document.querySelector(".enableEthereumButton").style.display = "none";
 });
 
 const ethereumButton = document.querySelector(".enableEthereumButton");
@@ -18,6 +15,7 @@ const getBalanceButton = document.querySelector(".getBalanceButton");
 const getUsersNFTSButton = document.querySelector(".getUsersNFTSButton");
 const showAccount = document.querySelector(".showAccount");
 const showBalanceElement = document.querySelector(".showBalance");
+const logoutButton = document.querySelector(".logoutButton");
 
 ethereumButton.addEventListener("click", () => {
   getAccount();
@@ -27,6 +25,9 @@ getBalanceButton.addEventListener("click", () => {
   getBalance();
 });
 
+getUsersNFTSButton.addEventListener("click", () => {
+  getUsersNFTs();
+});
 // getUsersNFTSButton.addEventListener("click", () => {
 //   getUsersNFTs();
 // });
@@ -52,11 +53,80 @@ async function getBalance() {
   showBalanceElement.textContent = balance;
 }
 
-async function getUsersNFTs() {
+async function logout() {
   const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+
   const account = accounts[0];
-  const nfts = await ethereum.request({
-    method: "wallet_watchAsset",
-  });
-  console.log(nfts);
+
+  console.log(logout);
+}
+
+async function getUsersNFTs() {
+  try {
+    const nftsContainer = document.querySelector(".nftsContainer");
+    nftsContainer.innerHTML = "";
+    const nftsIds = document
+      .querySelector(".nftIdsInput")
+      .value.replace(" ", "")
+      .split(",");
+
+    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+    const account = accounts[0];
+    const fetchUserId = await axios.get(
+      `https://api3.loopring.io/api/v3/account?owner=${account}`,
+      {
+        method: "GET",
+        headers: {
+          "X-API-KEY":
+            "XA24V7QYbIeTtFJ1YpHzpyF4J5Jk6OdpYf6S4K7fcS7a2NvC3Jb9bDdrSwpeF3mZ",
+          "access-control-allow-headers": "*",
+        },
+      }
+    );
+    const {
+      data: { totalNum, data },
+    } = await axios.get(
+      `https://api3.loopring.io/api/v3/user/nft/balances?accountId=${fetchUserId.data?.accountId}`,
+      {
+        method: "GET",
+        headers: {
+          "X-API-KEY":
+            "XA24V7QYbIeTtFJ1YpHzpyF4J5Jk6OdpYf6S4K7fcS7a2NvC3Jb9bDdrSwpeF3mZ",
+          "access-control-allow-headers": "*",
+        },
+      }
+    );
+
+    const filteredNfts = data.filter((nft) => {
+      return nftsIds.includes(nft.nftId);
+    });
+
+    data.forEach((nft) => {
+      if (nftsIds.includes(nft.nftId)) {
+        const nftElement = document.createElement("div");
+        nftElement.classList.add("nft");
+        nftElement.innerHTML = `
+        <div class="nftInfo" style="border:2px solid green;padding:5px;margin:5px">
+          <h2>Token: <span class="showAccount">${nft?.tokenAddress}</span></h2>
+          <h2>Nft id: <span class="showAccount">${nft?.nftId}</span></h2>
+          <h2> <em>this is among of entered ids </em> </h2>
+        </div>
+      `;
+        nftsContainer.appendChild(nftElement);
+      } else {
+        const nftElement = document.createElement("div");
+        nftElement.classList.add("nft");
+        nftElement.innerHTML = `
+        <div class="nftInfo" style="border:2px solid red;padding:5px;margin:5px">
+          <h2>Token: <span class="showAccount">${nft?.tokenAddress}</span></h2>
+          <h2>Nft id: <span class="showAccount">${nft?.nftId}</span></h2>
+          
+        </div>
+      `;
+        nftsContainer.appendChild(nftElement);
+      }
+    });
+
+    console.log(filteredNfts);
+  } catch (error) {}
 }

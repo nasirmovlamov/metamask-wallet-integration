@@ -6,14 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script defer src="script.js"></script>
+    <script defer src="https://unpkg.com/axios/dist/axios.min.js"></script>
   </head>
   <body>
     <button class="enableEthereumButton">Enable Ethereum</button>
     <button class="getBalanceButton">Get Balance</button>
-    <!-- <button class="getUsersNFTSButton">Get NFTS</button> -->
+    <button class="getUsersNFTSButton">Get NFTS</button>
+
+    <div class="nftIDCont">
+      <h2>Enter NFT ids with comma for checking in Collection</h2>
+      <textarea cols="100" type="text" class="nftIdsInput"> </textarea>
+    </div>
     <div class="account">
       <h2>Account: <span class="showAccount"></span></h2>
       <h2>Balance: <span class="showBalance"></span></h2>
+    </div>
+
+    <div>
+      <h2>My NFT Balance:</h2>
+      <div class="nftsContainer"></div>
     </div>
   </body>
 </html>
