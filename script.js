@@ -17,8 +17,28 @@ const showAccount = document.querySelector(".showAccount");
 const metaMaskInput = document.querySelector(".nftMetaMaskInput");
 const showBalanceElement = document.querySelector(".showBalance");
 const logoutButton = document.querySelector(".logoutButton");
+const scrollButton = document.querySelector(".scrollToSelectedNFT");
 
 
+scrollButton.addEventListener("click", () => {
+  scrollToSelectedNFT();
+});
+
+function scrollToSelectedNFT() {
+  const nftsIds = document
+      .querySelector(".nftIdsInput")
+      .value.replace(" ", "")
+    .split(",");
+  const nftsContainer = document.querySelector(".nftsContainer");
+  const nfts = nftsContainer.querySelectorAll(".nft");
+  console.log(nfts)
+  nfts.forEach((nft) => {
+    if (nftsIds.includes(nft.id)) {
+      nft.scrollIntoView();
+    }
+  })
+
+} ;
 
 
 ethereumButton.addEventListener("click", () => {
@@ -124,7 +144,7 @@ async function getUsersNFTs() {
         const nftElement = document.createElement("div");
         nftElement.classList.add("nft");
         nftElement.innerHTML = `
-        <div class="nftInfo" style="border:2px solid red;padding:5px;margin:5px">
+        <div class="nftInfo" style="border:2px solid red;padding:5px;margin:5px" id="${nft?.nftId}">
           <h2>Token: <span class="showAccount">${nft?.tokenAddress}</span></h2>
           <h2>Nft id: <span class="showAccount">${nft?.nftId}</span></h2>
           
