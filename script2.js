@@ -14,12 +14,11 @@ const ethereumButton = document.querySelector(".enableEthereumButton");
 const getBalanceButton = document.querySelector(".getBalanceButton");
 const getUsersNFTSButton = document.querySelector(".getUsersNFTSButton");
 const showAccount = document.querySelector(".showAccount");
-const metaMaskInput = document.querySelector(".nftMetaMaskInput");
 const showBalanceElement = document.querySelector(".showBalance");
+const metaMaskInput = document.querySelector(".nftMetaMaskInput");
 const logoutButton = document.querySelector(".logoutButton");
 
-
-
+const metaMaskAddress = metaMaskInput.val
 
 ethereumButton.addEventListener("click", () => {
   getAccount();
@@ -67,9 +66,6 @@ async function logout() {
 
 async function getUsersNFTs() {
   try {
-    const metaMaskAddress = metaMaskInput.value;
-    console.log(metaMaskInput);
-
     const nftsContainer = document.querySelector(".nftsContainer");
     nftsContainer.innerHTML = "";
     const nftsIds = document
@@ -80,7 +76,7 @@ async function getUsersNFTs() {
     const accounts = await ethereum.request({ method: "eth_requestAccounts" });
     const account = accounts[0];
     const fetchUserId = await axios.get(
-      `https://api3.loopring.io/api/v3/account?owner=${metaMaskAddress}`,
+      `https://api3.loopring.io/api/v3/account?owner=${account}`,
       {
         method: "GET",
         headers: {
@@ -91,9 +87,9 @@ async function getUsersNFTs() {
       }
     );
     const {
-      data: { totalNum, data },
+      data: { totalNum, transfers },
     } = await axios.get(
-      `https://api3.loopring.io/api/v3/user/nft/balances?accountId=${fetchUserId.data?.accountId}&limit=500`,
+      `https://api3.loopring.io/api/v3/user/nft/transfers?accountId=accountId=${fetchUserId.data?.accountId}`,
       {
         method: "GET",
         headers: {
